@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login - Weather Prediction ML</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><div class="auth"><div class="auth-box">
+  <div class="logo">⛅</div><h1>Welcome back</h1><p class="sub">Login to Smart Weather Prediction</p>
+  {% with msgs = get_flashed_messages(with_categories=true) %}{% for c,m in msgs %}<div class="flash {{c}}">{{m}}</div>{% endfor %}{% endwith %}
+  <form method="post">
+    <label>Email</label><input type="email" name="email" required placeholder="you@example.com">
+    <label>Password</label><input type="password" name="password" required placeholder="••••••••">
+    <button class="btn">Login</button>
+  </form>
+  <p class="alt">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div></div></body></html>

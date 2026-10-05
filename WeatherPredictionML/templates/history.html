@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}History{% endblock %}
+{% block content %}
+<div class="card"><h2>📜 My Prediction History</h2>
+{% if rows %}<table><tr><th>#</th><th>Temp (°C)</th><th>Humidity (%)</th><th>Wind (km/h)</th><th>Prediction</th><th>Confidence</th><th>Time</th></tr>
+{% for r in rows %}<tr><td>{{ loop.index }}</td><td>{{ r.temperature }}</td><td>{{ r.humidity }}</td><td>{{ r.windspeed }}</td>
+<td>{{ icons.get(r.result,'') }} {{ r.result }}</td><td>{{ r.confidence }}%</td><td>{{ r.created }}</td></tr>{% endfor %}</table>
+{% else %}<p style="color:var(--muted)">No predictions yet. Go to the dashboard and try one!</p>{% endif %}
+</div>{% endblock %}

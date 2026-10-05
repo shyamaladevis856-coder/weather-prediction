@@ -1,0 +1,89 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2 style="font-size:1.5rem">Hello, {{ session['name'] }} 👋</h2>
+<p style="color:var(--muted);margin-bottom:18px">Decision Tree Classifier • Features: Temperature, Humidity, WindSpeed</p>
+
+<div class="grid stats">
+  <div class="card stat"><div class="num">{{ m.accuracy }}%</div><div class="lbl">Model accuracy (test set)</div></div>
+  <div class="card stat"><div class="num">{{ m.baseline_accuracy }}%</div><div class="lbl">Baseline accuracy (no depth limit)</div></div>
+  <div class="card stat"><div class="num">{{ m.rows }}</div><div class="lbl">Dataset rows ({{ m.train_rows }} train / {{ m.test_rows }} test)</div></div>
+  <div class="card stat"><div class="num">{{ m.classes|length }}</div><div class="lbl">Classes: {{ m.classes|join(', ') }}</div></div>
+</div>
+
+<div class="grid two">
+  <div class="card">
+    <h2>🔮 Predict Weather</h2>
+    <form id="pform">
+      <div class="row3">
+        <div><label>Temperature (°C)</label><input type="number" step="any" id="Temperature" value="30" required></div>
+        <div><label>Humidity (%)</label><input type="number" step="any" id="Humidity" value="65" required></div>
+        <div><label>Wind (km/h)</label><input type="number" step="any" id="WindSpeed" value="12" required></div>
+      </div>
+      <button class="btn" type="submit">Predict</button>
+    </form>
+    <div class="err" id="err"></div>
+    <div class="result" id="result">
+      <div class="big" id="ricon"></div><div class="name" id="rname"></div>
+      <div style="color:var(--muted);margin-bottom:12px">Confidence: <span id="rconf"></span>%</div>
+      <div id="probs"></div>
+    </div>
+    <p class="note">This is a machine-learning prediction for academic use, not an official weather forecast.</p>
+  </div>
+  <div class="card"><h2>📊 Class Distribution</h2><canvas id="distChart" height="200"></canvas></div>
+</div>
+
+<div class="grid two">
+  <div class="card"><h2>🎯 Feature Importance</h2><canvas id="impChart" height="200"></canvas></div>
+  <div class="card"><h2>🧮 Confusion Matrix</h2>
+    <table class="cm"><tr><th>Actual ↓ / Predicted →</th>{% for c in m.classes %}<th class="c">{{ c }}</th>{% endfor %}</tr>
+    {% for row in m.confusion_matrix %}{% set i = loop.index0 %}<tr><th>{{ m.classes[i] }}</th>
+      {% for v in row %}<td class="c {{ 'diag' if loop.index0==i }}">{{ v }}</td>{% endfor %}</tr>{% endfor %}</table>
+    <h2 style="margin-top:20px">Precision / Recall / F1</h2>
+    <table><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+    {% for c in m.classes %}{% set r = m.report[c] %}<tr><td>{{ c }}</td><td>{{ '%.2f'|format(r.precision) }}</td><td>{{ '%.2f'|format(r.recall) }}</td><td>{{ '%.2f'|format(r['f1-score']) }}</td></tr>{% endfor %}</table>
+  </div>
+</div>
+
+<div class="grid two">
+  <div class="card"><h2>🕘 Recent Predictions</h2>
+    <table id="recent"><tr><th>Temp</th><th>Hum</th><th>Wind</th><th>Result</th><th>Conf.</th></tr>
+    {% for r in rows %}<tr><td>{{ r.temperature }}</td><td>{{ r.humidity }}</td><td>{{ r.windspeed }}</td><td>{{ icons.get(r.result,'') }} {{ r.result }}</td><td>{{ r.confidence }}%</td></tr>{% endfor %}</table>
+    <p class="note"><a href="{{ url_for('history') }}">View full history →</a></p></div>
+  <div class="card"><h2>🌳 Decision Tree Rules</h2><pre>{{ rules }}</pre></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const classes = {{ m.classes|tojson }};
+const counts = {{ m.class_counts|tojson }};
+const imp = {{ m.feature_importance|tojson }};
+const colors = ['#38bdf8','#6366f1','#22c55e','#f59e0b'];
+Chart.defaults.color = '#94a3b8';
+new Chart(document.getElementById('distChart'), {type:'doughnut',
+  data:{labels:classes, datasets:[{data:classes.map(c=>counts[c]), backgroundColor:colors, borderWidth:0}]}});
+new Chart(document.getElementById('impChart'), {type:'bar',
+  data:{labels:Object.keys(imp), datasets:[{label:'Importance', data:Object.values(imp), backgroundColor:'#38bdf8'}]},
+  options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'#334155'}}, x:{grid:{display:false}}}}});
+
+document.getElementById('pform').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = document.getElementById('err'); err.textContent = '';
+  const body = {};
+  ['Temperature','Humidity','WindSpeed'].forEach(k => body[k] = document.getElementById(k).value);
+  const res = await fetch('/predict', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  const d = await res.json();
+  if (!res.ok) { err.textContent = d.error; return; }
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('ricon').textContent = d.icon;
+  document.getElementById('rname').textContent = d.label;
+  document.getElementById('rconf').textContent = d.confidence;
+  document.getElementById('probs').innerHTML = Object.entries(d.probabilities).map(([k,v]) =>
+    `<div class="probrow"><span>${k}</span><span>${v}%</span></div><div class="bar"><i style="width:${v}%"></i></div>`).join('');
+  const t = document.getElementById('recent');
+  const row = t.insertRow(1);
+  row.innerHTML = `<td>${body.Temperature}</td><td>${body.Humidity}</td><td>${body.WindSpeed}</td><td>${d.icon} ${d.label}</td><td>${d.confidence}%</td>`;
+  if (t.rows.length > 9) t.deleteRow(9);
+});
+</script>
+{% endblock %}

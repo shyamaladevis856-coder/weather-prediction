@@ -1,0 +1,94 @@
+|--- Humidity <= 76.50
+|   |--- Humidity <= 58.50
+|   |   |--- Temperature <= 28.05
+|   |   |   |--- Humidity <= 49.50
+|   |   |   |   |--- WindSpeed <= 19.35
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |   |--- WindSpeed >  19.35
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |--- Humidity >  49.50
+|   |   |   |   |--- Humidity <= 54.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- Humidity >  54.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |--- Temperature >  28.05
+|   |   |   |--- Temperature <= 30.85
+|   |   |   |   |--- Humidity <= 54.50
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |   |--- Humidity >  54.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |--- Temperature >  30.85
+|   |   |   |   |--- Temperature <= 32.85
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |   |--- Temperature >  32.85
+|   |   |   |   |   |--- class: Sunny
+|   |--- Humidity >  58.50
+|   |   |--- Temperature <= 33.15
+|   |   |   |--- Humidity <= 73.50
+|   |   |   |   |--- Humidity <= 64.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- Humidity >  64.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |--- Humidity >  73.50
+|   |   |   |   |--- Temperature <= 24.85
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |   |--- Temperature >  24.85
+|   |   |   |   |   |--- class: Cloudy
+|   |   |--- Temperature >  33.15
+|   |   |   |--- WindSpeed <= 16.25
+|   |   |   |   |--- Temperature <= 34.95
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |   |--- Temperature >  34.95
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |--- WindSpeed >  16.25
+|   |   |   |   |--- Humidity <= 63.50
+|   |   |   |   |   |--- class: Sunny
+|   |   |   |   |--- Humidity >  63.50
+|   |   |   |   |   |--- class: Cloudy
+|--- Humidity >  76.50
+|   |--- Humidity <= 82.50
+|   |   |--- WindSpeed <= 17.85
+|   |   |   |--- Temperature <= 25.55
+|   |   |   |   |--- Humidity <= 79.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- Humidity >  79.50
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |--- Temperature >  25.55
+|   |   |   |   |--- Temperature <= 33.95
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- Temperature >  33.95
+|   |   |   |   |   |--- class: Sunny
+|   |   |--- WindSpeed >  17.85
+|   |   |   |--- Temperature <= 28.85
+|   |   |   |   |--- WindSpeed <= 23.25
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |   |--- WindSpeed >  23.25
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |--- Temperature >  28.85
+|   |   |   |   |--- Humidity <= 78.50
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- Humidity >  78.50
+|   |   |   |   |   |--- class: Rainy
+|   |--- Humidity >  82.50
+|   |   |--- Temperature <= 28.45
+|   |   |   |--- WindSpeed <= 11.55
+|   |   |   |   |--- Humidity <= 86.50
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |   |--- Humidity >  86.50
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |--- WindSpeed >  11.55
+|   |   |   |   |--- Temperature <= 25.25
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |   |--- Temperature >  25.25
+|   |   |   |   |   |--- class: Rainy
+|   |   |--- Temperature >  28.45
+|   |   |   |--- Humidity <= 87.50
+|   |   |   |   |--- WindSpeed <= 18.05
+|   |   |   |   |   |--- class: Cloudy
+|   |   |   |   |--- WindSpeed >  18.05
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |--- Humidity >  87.50
+|   |   |   |   |--- WindSpeed <= 14.15
+|   |   |   |   |   |--- class: Rainy
+|   |   |   |   |--- WindSpeed >  14.15
+|   |   |   |   |   |--- class: Rainy
